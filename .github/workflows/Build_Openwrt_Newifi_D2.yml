@@ -45,11 +45,11 @@ jobs:
           sudo -E apt-get clean
 
       - name: Clone source
-          env:
-            REPO_URL: https://github.com/coolsnowwolf/lede
-            REPO_BRANCH: master
-          run: |
-            git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
+        env:
+          REPO_URL: https://github.com/coolsnowwolf/lede
+          REPO_BRANCH: master
+        run: |
+          git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
 
       - name: Update & Install feeds
         working-directory: ./openwrt
