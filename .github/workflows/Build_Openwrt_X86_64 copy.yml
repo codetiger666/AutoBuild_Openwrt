@@ -63,6 +63,7 @@ jobs:
           ./scripts/feeds install -a
 
       - name: Gen Config
+        working-directory: ./openwrt
         env:
           CONFIG_FILE: 'x86_64.config'
         run: |
