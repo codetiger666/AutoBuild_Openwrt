@@ -13,8 +13,8 @@ on:
         required: true
         default: 'true'
 
-  push:
-    branches: [ main ]
+  #push:
+  #  branches: [ main ]
   # pull_request:
   #   branches: [ main ]
 
@@ -54,6 +54,9 @@ jobs:
           echo "src-git helloworld https://github.com/fw876/helloworld" >> feeds.conf.default
           echo "src-git openclash https://github.com/vernesong/OpenClash" >> feeds.conf.default
           echo "src-git passwall https://github.com/xiaorouji/openwrt-passwall" >> feeds.conf.default
+          cd package/lean/
+          git clone https://github.com/jerrykuku/lua-maxminddb.git
+          git clone https://github.com/jerrykuku/luci-app-vssr.git
 
 
       - name: Update & Install feeds
