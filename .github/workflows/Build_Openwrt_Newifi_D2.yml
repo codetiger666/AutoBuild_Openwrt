@@ -2,35 +2,63 @@
 
 name: Build_Newifi_D2
 
-# Controls when the action will run. 
+# The type of start
 on:
-  # Triggers the workflow on push or pull request events but only for the main branch
+
+  repository_dispatch:
+  workflow_dispatch:
+    inputs:
+      ssh:
+        description: 'SSH connection to Actions'
+        required: true
+        default: 'false'
+
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  # pull_request:
+  #   branches: [ main ]
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+# define workflow
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
+    # define steps
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@main
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
+      - name: Initialization environment
+        env:
+          DEBIAN_FRONTEND: noninteractive
         run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+          sudo apt upgrade
+          sudo apt-get -y install build-essential asciidoc \
+          binutils bzip2 gawk gettext git libncurses5-dev \
+          libz-dev patch python3 python2.7 unzip zlib1g-dev \
+          lib32gcc1 libc6-dev-i386 subversion flex uglifyjs \
+          git-core gcc-multilib p7zip p7zip-full msmtp libssl-dev \
+          texinfo libglib2.0-dev xmlto qemu-utils upx libelf-dev \
+          autoconf automake libtool autopoint device-tree-compiler \
+          g++-multilib antlr3 gperf wget curl swig rsync
+          sudo -E apt-get clean
+
+      - name: Clone source
+          env:
+            REPO_URL: https://github.com/coolsnowwolf/lede
+            REPO_BRANCH: master
+          run: |
+            git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
+
+      - name: Update & Install feeds
+        working-directory: ./openwrt
+        run: |
+          echo "111">1.txt
+        
+      - name: SSH connection to Actions
+        uses: P3TERX/ssh2actions@v1.0.0
+        if: (github.event.inputs.ssh == 'true' && github.event.inputs.ssh  != 'false') || contains(github.event.action, 'ssh')
+        env:
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}        
