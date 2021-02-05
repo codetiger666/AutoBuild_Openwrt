@@ -51,9 +51,9 @@ jobs:
         run: |
           git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
           cd openwrt
-          echo "src-git helloworld https://github.com/fw876/helloworld" > feeds.conf.default
-          echo "src-git openclash https://github.com/vernesong/OpenClash" > feeds.conf.default
-          echo "src-git passwall https://github.com/xiaorouji/openwrt-passwall" > feeds.conf.default
+          echo "src-git helloworld https://github.com/fw876/helloworld" >> feeds.conf.default
+          echo "src-git openclash https://github.com/vernesong/OpenClash" >> feeds.conf.default
+          echo "src-git passwall https://github.com/xiaorouji/openwrt-passwall" >> feeds.conf.default
 
 
       - name: Update & Install feeds
@@ -83,11 +83,11 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}   
 
-      - name: Build firmware
-        working-directory: ./openwrt
-        run: |
-          echo -e "$(nproc) thread build."
-          make -j$(nproc) V=s      
+      # - name: Build firmware
+      #   working-directory: ./openwrt
+      #   run: |
+      #     echo -e "$(nproc) thread build."
+      #     make -j$(nproc) V=s      
 
       - name : Upload artifact
         uses: actions/upload-artifact@master
