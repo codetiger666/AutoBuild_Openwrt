@@ -42,7 +42,6 @@ jobs:
           texinfo libglib2.0-dev xmlto qemu-utils upx libelf-dev \
           autoconf automake libtool autopoint device-tree-compiler \
           g++-multilib antlr3 gperf wget curl swig rsync
-          sudo -E apt-get clean
 
       - name: Clone source
         env:
@@ -51,12 +50,13 @@ jobs:
         run: |
           git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
           cd openwrt
-          echo "src-git helloworld https://github.com/fw876/helloworld" >> feeds.conf.default
-          echo "src-git openclash https://github.com/vernesong/OpenClash" >> feeds.conf.default
-          echo "src-git passwall https://github.com/xiaorouji/openwrt-passwall" >> feeds.conf.default
-          cd package/lean/
-          git clone https://github.com/jerrykuku/lua-maxminddb.git
-          git clone https://github.com/jerrykuku/luci-app-vssr.git
+          sed -i 's/#src-git helloworld/src-git helloworld/g' ./feeds.conf.default
+          # echo "src-git helloworld https://github.com/fw876/helloworld" >> feeds.conf.default
+          # echo "src-git openclash https://github.com/vernesong/OpenClash" >> feeds.conf.default
+          # echo "src-git passwall https://github.com/xiaorouji/openwrt-passwall" >> feeds.conf.default
+          # cd package/lean/
+          # git clone https://github.com/jerrykuku/lua-maxminddb.git
+          # git clone https://github.com/jerrykuku/luci-app-vssr.git
 
 
       - name: Update & Install feeds
@@ -87,11 +87,11 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}  
 
-      - name: Build firmware
-        working-directory: ./openwrt
-        run: |
-          echo -e "$(nproc) thread build."      
-          make -j1 V=s
+      # - name: Build firmware
+      #   working-directory: ./openwrt
+      #   run: |
+      #     echo -e "$(nproc) thread build."      
+      #     make -j1 V=s
 
       - name : Upload artifact
         uses: actions/upload-artifact@master
