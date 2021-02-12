@@ -18,6 +18,15 @@ on:
   # pull_request:
   #   branches: [ main ]
 
+env:
+  DIY_SCRIPT: Scripts/AutoBuild_DiyScript.sh
+  FUNCTION_SCRIPT: Scripts/AutoBuild_Function.sh
+  UPLOAD_RELEASE: true
+  UPLOAD_FIRMWARE: true
+  UPLOAD_BIN_DIR: false
+  REMOVE_OLD_RELEASE: false
+  REMOVE_WORKFLOW_RUNS: true
+
 # define workflow
 jobs:
   build:
