@@ -85,7 +85,7 @@ jobs:
       - name: Compile the Openwrt
         run: |
           cd openwrt
-          make -j$(nproc) || make -j1 || make -j1 V=s
+          make -j$(($(nproc)*2)) V=s
       - name: Run Diy-Part3 Scripts
         run: |
           echo "## $(date +"%Y%m%d")" > update_log.txt
