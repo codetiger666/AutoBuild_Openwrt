@@ -19,6 +19,8 @@ on:
   #   branches: [ main ]
 
 env:
+  env:
+  CONFIG_FILE: newifi_D2.config
   DIY_SCRIPT: Scripts/AutoBuild_DiyScript.sh
   FUNCTION_SCRIPT: Scripts/AutoBuild_Function.sh
   UPLOAD_RELEASE: true
