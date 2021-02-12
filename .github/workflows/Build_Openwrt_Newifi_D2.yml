@@ -46,7 +46,7 @@ jobs:
 
       - name: Clone Openwrt source code
         run: |
-          git clone -b master $REPO_URL openwrt
+          git clone -b master https://github.com/coolsnowwolf/lede.git openwrt
           ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
       - name: Run Diy-Part1 Scripts
         run: |
