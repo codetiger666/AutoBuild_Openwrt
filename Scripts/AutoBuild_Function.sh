@@ -1,6 +1,5 @@
 #!/bin/bash
 # https://github.com/nieningproj/AutoBuild_Openwrt
-
 GET_TARGET_INFO() {
 	[ -f ${GITHUB_WORKSPACE}/Openwrt.info ] && . ${GITHUB_WORKSPACE}/Openwrt.info
 	Default_File="package/lean/default-settings/files/zzz-default-settings"

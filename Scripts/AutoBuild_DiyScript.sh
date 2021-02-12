@@ -1,6 +1,5 @@
 #!/bin/bash
 # https://github.com/nieningproj/AutoBuild_Openwrt
-
 Diy_Core() {
 	Author=CodeTiger
 	Default_Device=d-team_newifi-d2
