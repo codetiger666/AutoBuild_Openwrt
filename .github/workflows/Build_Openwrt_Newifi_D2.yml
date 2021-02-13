@@ -42,7 +42,7 @@ jobs:
         env:
           DEBIAN_FRONTEND: noninteractive
         run: |
-          sudo rm -rf localtime
+          sudo rm -rf /etc/localtime
           sudo ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
           sudo apt upgrade
           sudo apt-get -y install build-essential asciidoc \
