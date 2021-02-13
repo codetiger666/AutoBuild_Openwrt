@@ -92,7 +92,7 @@ jobs:
       - name: Compile the Openwrt
         working-directory: ./lede
         run: |
-          make -j99 V=s
+          make -j1 V=s
 
       # - name: Run Diy-Part3 Scripts
       #   run: |
