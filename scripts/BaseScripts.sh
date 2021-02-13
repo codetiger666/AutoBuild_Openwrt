@@ -18,7 +18,7 @@ Diy-Part1() {
     Date=`date "+%Y/%m/%d"`
     Lede_Version="$(egrep -o "R[0-9]+\.[0-9]+\.[0-9]+" ${Default_File})"
     mkdir -p $GITHUB_WORKSPACE/lede/package/base-files/files/etc/config > /dev/null 2>1
-    mv -f Customize/banner $GITHUB_WORKSPACE/lede/package/base-files/files/etc/config
+    mv -f Customize/banner $GITHUB_WORKSPACE/lede/package/base-files/files/etc
     cd $GITHUB_WORKSPACE/lede/package/base-files/files/bin
     sed -i "s/192.168.1.1/10.10.1.1/g" config_generate
     sed -i "s/192.168/10.10/g" config_generate

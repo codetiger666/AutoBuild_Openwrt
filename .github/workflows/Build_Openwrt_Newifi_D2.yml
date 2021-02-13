@@ -83,16 +83,17 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
 
-      # - name: Download Packages
-      #   run: |
-      #     cd openwrt
-      #     make defconfig
-      #     make download -j$(nproc) V=s
-      #     find dl -size -1024c -exec rm -f {} \;
-      # - name: Compile the Openwrt
-      #   run: |
-      #     cd openwrt
-      #     make -j99 V=s
+      - name: Download Packages
+        run: |
+          cd openwrt
+          make defconfig
+          make download -j$(nproc) V=s
+          find dl -size -1024c -exec rm -f {} \;
+
+      - name: Compile the Openwrt
+        run: |
+          cd openwrt
+          make -j99 V=s
 
       # - name: Run Diy-Part3 Scripts
       #   run: |
@@ -103,12 +104,12 @@ jobs:
       #     echo "Artifacts_DATE=$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
 
 
-      # - name: Upload Firmware to Artifacts
-      #   uses: actions/upload-artifact@main
-      #   if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
-      #   with:
-      #     name: OpenWrt_Firmware_${{ env.Artifacts_DATE }}
-      #     path: openwrt/bin/Firmware
+      - name: Upload Firmware to Artifacts
+        uses: actions/upload-artifact@main
+        if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
+        with:
+          # name: OpenWrt_Firmware_${{ env.Artifacts_DATE }}
+          path: openwrt/bin
           
       # - name: Upload Firmware directory to Artifacts
       #   uses: actions/upload-artifact@main
