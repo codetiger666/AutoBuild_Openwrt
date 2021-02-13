@@ -65,10 +65,10 @@ jobs:
           ./scripts/feeds update -a
           ./scripts/feeds install -a
 
-      # - name: Run Diy-Part1 Scripts
-      #   run: |
-      #     source scripts/BaseScripts.sh
-      #     Diy-Part1
+      - name: Run Diy-Part1 Scripts
+        run: |
+          source scripts/BaseScripts.sh
+          Diy-Part1
 
       - name: make defconfig
         run: |
