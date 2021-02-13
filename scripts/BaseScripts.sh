@@ -21,8 +21,8 @@ Diy-Part1() {
     cd $GITHUB_WORKSPACE/lede/package/base-files/files/bin
     sed -i "s/192.168.1.1/10.10.1.1/g" config_generate
     sed -i "s/192.168/10.10/g" config_generate
-    mkdir -p $GITHUB_WORKSPACE/lede/package/base-files/files/etc/config
-    mkdir -p  $GITHUB_WORKSPACE/lede/package/CodeTiger
+    mkdir -p $GITHUB_WORKSPACE/lede/package/base-files/files/etc/config > /dev/null 2>1
+    mkdir -p  $GITHUB_WORKSPACE/lede/package/CodeTiger > /dev/null 2>1
     cd $GITHUB_WORKSPACE/lede/package/CodeTiger
     svn checkout https://github.com/openwrt/openwrt/trunk/package/kernel/mt76
     git clone https://github.com/jerrykuku/luci-theme-argon.git -b 18.06
