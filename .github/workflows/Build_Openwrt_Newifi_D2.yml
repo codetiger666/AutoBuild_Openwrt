@@ -83,16 +83,16 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
 
-      - name: Download Packages
-        working-directory: ./lede
-        run: |
-          make download -j$(nproc) V=s
-          find dl -size -1024c -exec rm -f {} \;
+      # - name: Download Packages
+      #   working-directory: ./lede
+      #   run: |
+      #     make download -j$(nproc) V=s
+      #     find dl -size -1024c -exec rm -f {} \;
 
       - name: Compile the Openwrt
         working-directory: ./lede
         run: |
-          make -j1 V=s
+          make -j2 V=s
 
       # - name: Run Diy-Part3 Scripts
       #   run: |
