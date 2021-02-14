@@ -52,6 +52,12 @@ Diy-Part1() {
         cd $GITHUB_WORKSPACE
         mv -f Customize/wireless $GITHUB_WORKSPACE/lede/package/base-files/files/etc/config
     fi
+    if [ $INCLUDE_Enable_Ipv6 = 'true' ]; then
+        cd $GITHUB_WORKSPACE
+        mkdir -p $GITHUB_WORKSPACE/lede/package/base-files/files/etc/hotplug.d/iface
+        mv -f Customize/90-ipv6 $GITHUB_WORKSPACE/lede/package/base-files/files/etc/hotplug.d/iface
+        sed -i '41a\echo "'"ip6tables -t nat -A POSTROUTING -o eth0.2 -j MASQUERADE"'" >> \/etc\/firewall.user' $GITHUB_WORKSPACE/lede/package/lean/default-settings/files/zzz-default-settings 
+    fi
     cd $GITHUB_WORKSPACE
     mv -f Customize/mwan3 $GITHUB_WORKSPACE/lede/package/feeds/packages/mwan3/files/etc/config
     sed -i "s?Openwrt?Openwrt Compiled By $Author?g" $GITHUB_WORKSPACE/lede/package/base-files/files/etc/banner
