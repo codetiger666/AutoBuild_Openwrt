@@ -44,15 +44,8 @@ jobs:
         run: |
           sudo rm -rf /etc/localtime
           sudo ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
-          sudo apt upgrade
-          sudo apt-get -y install build-essential asciidoc \
-          binutils bzip2 gawk gettext git libncurses5-dev \
-          libz-dev patch python3 python2.7 unzip zlib1g-dev \
-          lib32gcc1 libc6-dev-i386 subversion flex uglifyjs \
-          git-core gcc-multilib p7zip p7zip-full msmtp libssl-dev \
-          texinfo libglib2.0-dev xmlto qemu-utils upx libelf-dev \
-          autoconf automake libtool autopoint device-tree-compiler \
-          g++-multilib antlr3 gperf wget curl swig rsync
+          sudo -E apt-get -qq update
+          sudo -E apt-get -qq install $(curl -fsSL git.io/depends-ubuntu-1804)
           sudo -E apt-get clean
 
       - name: Clone Openwrt source code
@@ -65,16 +58,16 @@ jobs:
           ./scripts/feeds update -a
           ./scripts/feeds install -a
 
-      # - name: Run Diy-Part1 Scripts
-      #   run: |
-      #     source scripts/BaseScripts.sh
-      #     Diy-Part1
+      - name: Run Diy-Part1 Scripts
+        run: |
+          source scripts/BaseScripts.sh
+          Diy-Part1
 
-      # - name: make defconfig
-      #   run: |
-      #     [ -f $CONFIG_FILE ] && mv $CONFIG_FILE lede/.config
-      #     cd lede
-      #     make defconfig
+      - name: make defconfig
+        run: |
+          [ -f $CONFIG_FILE ] && mv $CONFIG_FILE lede/.config
+          cd lede
+          make defconfig
 
       - name: SSH connection to Actions
         uses: P3TERX/ssh2actions@v1.0.0
@@ -83,11 +76,11 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
 
-      # - name: Download Packages
-      #   working-directory: ./lede
-      #   run: |
-      #     make download -j$(nproc) V=s
-      #     find dl -size -1024c -exec rm -f {} \;
+      - name: Download Packages
+        working-directory: ./lede
+        run: |
+          make download -j$(nproc) V=s
+          find dl -size -1024c -exec rm -f {} \;
 
       - name: Compile the Openwrt
         working-directory: ./lede
