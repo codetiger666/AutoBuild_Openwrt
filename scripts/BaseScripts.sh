@@ -28,7 +28,7 @@ Diy-Part1() {
     mkdir -p $GITHUB_WORKSPACE/lede/package/base-files/files/etc/config > /dev/null 2>1
     mkdir -p  $GITHUB_WORKSPACE/lede/package/CodeTiger > /dev/null 2>1
     cd $GITHUB_WORKSPACE/lede/package/CodeTiger
-    svn checkout https://github.com/openwrt/openwrt/trunk/package/kernel/mt76
+    # svn checkout https://github.com/openwrt/openwrt/trunk/package/kernel/mt76
     git clone https://github.com/jerrykuku/luci-theme-argon.git -b 18.06
     git clone https://github.com/jerrykuku/luci-app-argon-config.git
     if (( $INCLUDE_SSR_Plus == 'true' )); then
