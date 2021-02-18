@@ -62,6 +62,7 @@ jobs:
         run: |
           source scripts/BaseScripts.sh
           Diy-Part1
+          echo "Artifacts_DATE=$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
 
       - name: make defconfig
         run: |
@@ -79,13 +80,12 @@ jobs:
       - name: Download Packages
         working-directory: ./lede
         run: |
-          make download -j$(nproc) V=s
-          find dl -size -1024c -exec rm -f {} \;
+          make download -j V=s
 
       - name: Compile the Openwrt
         working-directory: ./lede
         run: |
-          make -j2 V=s
+          make -j4 V=s
 
       # - name: Run Diy-Part3 Scripts
       #   run: |
@@ -95,43 +95,47 @@ jobs:
       #     source $GITHUB_WORKSPACE/$FUNCTION_SCRIPT && Diy-Part3
       #     echo "Artifacts_DATE=$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
 
+      - name: Recompile the Openwrt 
+        working-directory: ./lede
+        if: failure()
+        run: |
+          make -j1 V=s
 
       - name: Upload Firmware to Artifacts
         uses: actions/upload-artifact@main
         if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
         with:
-          # name: OpenWrt_Firmware_${{ env.Artifacts_DATE }}
+          name: OpenWrt_Firmware_${{ env.Artifacts_DATE }}
           path: lede/bin
           
-      # - name: Upload Firmware directory to Artifacts
-      #   uses: actions/upload-artifact@main
-      #   if: env.UPLOAD_BIN_DIR == 'true' && !cancelled()
-      #   with:
-      #     name: OpenWrt_bin_${{ env.Artifacts_DATE }}
-      #     path: openwrt
+      - name: copy file to Releases
+        working-directory: ./lede
+        run: |
+          source scripts/BaseScripts.sh
+          Diy-Part2
 
-      # - name: Upload Firmware to Releases
-      #   uses: softprops/action-gh-release@v1
-      #   if: env.UPLOAD_RELEASE == 'true' && !cancelled()
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
-      #   with:
-      #     tag_name: AutoUpdate
-      #     body_path: update_log.txt
-      #     files: openwrt/bin/Firmware/*
+      - name: Upload Firmware to Releases
+        uses: softprops/action-gh-release@v1
+        if: env.UPLOAD_RELEASE == 'true' && !cancelled()
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+        with:
+          tag_name: AutoUpdate
+          body_path: update_log.txt
+          files: lede/bin/Firmware/*
           
-      # - name: Remove old Releases
-      #   uses: dev-drprasad/delete-older-releases@v0.1.0
-      #   if: env.REMOVE_OLD_RELEASE == 'true' && !cancelled()
-      #   with:
-      #     keep_latest: 3
-      #     delete_tags: true
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Remove old Releases
+        uses: dev-drprasad/delete-older-releases@v0.1.0
+        if: env.REMOVE_OLD_RELEASE == 'true' && !cancelled()
+        with:
+          keep_latest: 3
+          delete_tags: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
           
-      # - name: Remove workflow runs
-      #   uses: GitRML/delete-workflow-runs@main
-      #   if: env.REMOVE_WORKFLOW_RUNS == 'true' && !cancelled()
-      #   with:
-      #     retain_days: 1
-      #     keep_minimum_runs: 3
+      - name: Remove workflow runs
+        uses: GitRML/delete-workflow-runs@main
+        if: env.REMOVE_WORKFLOW_RUNS == 'true' && !cancelled()
+        with:
+          retain_days: 1
+          keep_minimum_runs: 3

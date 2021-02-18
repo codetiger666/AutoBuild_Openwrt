@@ -67,3 +67,15 @@ Diy-Part1() {
     sed -i "s?${Lede_Version}?${Lede_Version} Compiled by ${Author} [$Date]?g" $Default_File
     mv -f Customize/dhcp $GITHUB_WORKSPACE/lede/package/base-files/files/etc/config
 }
+
+Diy-Part1() {
+    Date=`date "+%Y/%m/%d"`
+    Default_Firmware="openwrt-${TARGET_BOARD}-${TARGET_SUBTARGET}-${TARGET_PROFILE}-squashfs-sysupgrade.bin"
+	AutoBuild_Firmware="AutoBuild-${TARGET_PROFILE}-${Date}.bin"
+	AutoBuild_Detail="AutoBuild-${TARGET_PROFILE}-${Date}.detail"
+	mkdir bin/Firmware
+	mv -f bin/targets/"${TARGET_BOARD}/${TARGET_SUBTARGET}/${Default_Firmware}" bin/Firmware/"${AutoBuild_Firmware}"
+	_MD5=$(md5sum bin/Firmware/${AutoBuild_Firmware} | cut -d ' ' -f1)
+	_SHA256=$(sha256sum bin/Firmware/${AutoBuild_Firmware} | cut -d ' ' -f1)
+    echo -e "\nMD5:${_MD5}\nSHA256:${_SHA256}" > bin/Firmware/"${AutoBuild_Detail}"
+}
