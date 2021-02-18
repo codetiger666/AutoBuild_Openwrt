@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: Build_X86_64
+name: Build_x86_64
 
 # The type of start
 on:
@@ -11,18 +11,27 @@ on:
       ssh:
         description: 'SSH connection to Actions'
         required: true
-        default: 'true'
-
+        default: 'false'
 
   #push:
   #  branches: [ main ]
   # pull_request:
   #   branches: [ main ]
 
+env:
+  env:
+  CONFIG_FILE: newifi_D2.conf
+  DRIVE_LABLE: newifi_D2
+  UPLOAD_RELEASE: true
+  UPLOAD_FIRMWARE: true
+  UPLOAD_BIN_DIR: false
+  REMOVE_OLD_RELEASE: false
+  REMOVE_WORKFLOW_RUNS: true
+
 # define workflow
 jobs:
   build:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
 
     # define steps
     steps:
@@ -34,68 +43,110 @@ jobs:
         env:
           DEBIAN_FRONTEND: noninteractive
         run: |
-          sudo apt upgrade
-          sudo apt-get -y install build-essential asciidoc \
-          binutils bzip2 gawk gettext git libncurses5-dev \
-          libz-dev patch python3 python2.7 unzip zlib1g-dev \
-          lib32gcc1 libc6-dev-i386 subversion flex uglifyjs \
-          git-core gcc-multilib p7zip p7zip-full msmtp libssl-dev \
-          texinfo libglib2.0-dev xmlto qemu-utils upx libelf-dev \
-          autoconf automake libtool autopoint device-tree-compiler \
-          g++-multilib antlr3 gperf wget curl swig rsync
+          sudo rm -rf /etc/localtime
+          sudo ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+          sudo -E apt-get -qq update
+          sudo -E apt-get -qq install $(curl -fsSL git.io/depends-ubuntu-1804)
+          sudo -E apt-get clean
+          cd
+          echo "export DRIVE_LABLE=$DRIVE_LABLE" >> .profile
+          source .profile
 
-      - name: Clone source
-        env:
-          REPO_URL: https://github.com/coolsnowwolf/lede
-          REPO_BRANCH: master
+      - name: Clone Openwrt source code
         run: |
-          git clone --depth 1 $REPO_URL -b $REPO_BRANCH openwrt
-          cd openwrt
-          sed -i 's/#src-git helloworld/src-git helloworld/g' ./feeds.conf.default
-          # echo "src-git helloworld https://github.com/fw876/helloworld" >> feeds.conf.default
-          # echo "src-git openclash https://github.com/vernesong/OpenClash" >> feeds.conf.default
-          # echo "src-git passwall https://github.com/xiaorouji/openwrt-passwall" >> feeds.conf.default
-          # cd package/lean/
-          # git clone https://github.com/jerrykuku/lua-maxminddb.git
-          # git clone https://github.com/jerrykuku/luci-app-vssr.git
+          git clone -b master https://github.com/coolsnowwolf/lede.git
 
-
-      - name: Update & Install feeds
-        working-directory: ./openwrt
+      - name: Update & Install Feeds
         run: |
+          cd lede
           ./scripts/feeds update -a
           ./scripts/feeds install -a
 
-      - name: Gen Config
-        env:
-          CONFIG_FILE: 'x86_64.config'
+      - name: Run Diy-Part1 Scripts
         run: |
-          [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
-          cd openwrt
+          source scripts/BaseScripts.sh
+          Diy-Part1
+          echo "Artifacts_DATE=$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
+
+      - name: make defconfig
+        run: |
+          [ -f $CONFIG_FILE ] && mv $CONFIG_FILE lede/.config
+          cd lede
           make defconfig
 
-      - name: Download package
-        working-directory: ./openwrt
-        run: |
-          make download -j$(nproc)
-          find dl -size -1024c -exec ls -l {} \;
-          find dl -size -1024c -exec rm -f {} \;  
-        
       - name: SSH connection to Actions
         uses: P3TERX/ssh2actions@v1.0.0
         if: (github.event.inputs.ssh == 'true' && github.event.inputs.ssh  != 'false') || contains(github.event.action, 'ssh')
         env:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}  
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
 
-      # - name: Build firmware
-      #   working-directory: ./openwrt
+      - name: Download Packages
+        working-directory: ./lede
+        run: |
+          make download -j V=s
+
+      - name: Compile the Openwrt
+        working-directory: ./lede
+        run: |
+          make -j4 V=s
+
+      # - name: Run Diy-Part3 Scripts
       #   run: |
-      #     echo -e "$(nproc) thread build."      
-      #     make -j1 V=s
+      #     echo "## $(date +"%Y%m%d")" > update_log.txt
+      #     cd openwrt
+      #     source $GITHUB_WORKSPACE/$DIY_SCRIPT
+      #     source $GITHUB_WORKSPACE/$FUNCTION_SCRIPT && Diy-Part3
+      #     echo "Artifacts_DATE=$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
 
-      - name : Upload artifact
-        uses: actions/upload-artifact@master
+      - name: Recompile the Openwrt 
+        working-directory: ./lede
+        if: failure()
+        run: |
+          make -j1 V=s
+
+      - name: Upload Firmware to Artifacts
+        uses: actions/upload-artifact@main
+        if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
         with:
-          name: OpenWrt
-          path: openwrt/bin
+          name: OpenWrt_Firmware_${{ env.Artifacts_DATE }}
+          path: lede/bin
+          
+      - name: copy file to Releases
+        working-directory: ./lede
+        run: |
+          source ../scripts/BaseScripts.sh
+          Diy-Part2
+
+      - name: Upload Firmware to Releases
+        uses: softprops/action-gh-release@v1
+        if: env.UPLOAD_RELEASE == 'true' && !cancelled()
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+        with:
+          tag_name: x86_64
+          files: lede/bin/Firmware/*
+
+          
+      - name: Remove old Releases
+        uses: dev-drprasad/delete-older-releases@v0.1.0
+        if: env.REMOVE_OLD_RELEASE == 'true' && !cancelled()
+        with:
+          keep_latest: 3
+          delete_tags: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+          
+      - name: Remove workflow runs
+        uses: GitRML/delete-workflow-runs@main
+        if: env.REMOVE_WORKFLOW_RUNS == 'true' && !cancelled()
+        with:
+          retain_days: 1
+          keep_minimum_runs: 3
+
+      - name: SSH connection to Actions1
+        uses: P3TERX/ssh2actions@v1.0.0
+        if: failure()
+        env:
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}

@@ -1,7 +1,7 @@
 #!/bin/bash
 # https://github.com/nieningproj/AutoBuild_Openwrt
 
-Core(){
+Core_Newifi_D2(){
     Author=CodeTiger
     INCLUDE_SSR_Plus=true
     INCLUDE_Passwall=true
@@ -10,10 +10,24 @@ Core(){
     INCLUDE_Enable_FirewallPort_53=true
     INCLUDE_Enable_Ipv6=true
     Change_Wifi=true
+    INCLUDE_Enable_MWan3=true
+    Change_Dhcp=true
+}
+
+Core_x86_64(){
+    Author=CodeTiger
+    INCLUDE_SSR_Plus=true
+    INCLUDE_Passwall=true
+    INCLUDE_VSSR=true
 }
 
 Diy-Part1() {
-    Core
+    if [ "$DRIVE_LABLE" == "newifi_D2" ];then
+        Core_Newifi_D2
+    fi
+    if [ "$DRIVE_LABLE" == "x86_64" ];then
+        Core_x86_64
+    fi
     Default_File="$GITHUB_WORKSPACE/lede/package/lean/default-settings/files/zzz-default-settings"
     Date=`date "+%Y/%m/%d"`
     Lede_Version="$(egrep -o "R[0-9]+\.[0-9]+\.[0-9]+" ${Default_File})"
@@ -31,41 +45,49 @@ Diy-Part1() {
     # svn checkout https://github.com/openwrt/openwrt/trunk/package/kernel/mt76
     git clone https://github.com/jerrykuku/luci-theme-argon.git -b 18.06
     git clone https://github.com/jerrykuku/luci-app-argon-config.git
-    if (( $INCLUDE_SSR_Plus == 'true' )); then
+    if [ "$INCLUDE_SSR_Plus" == "true" ]; then
         cd $GITHUB_WORKSPACE/lede/package/CodeTiger
         git clone https://github.com/fw876/helloworld.git -b master
     fi
-    if (( $INCLUDE_Passwall == 'true' )); then
+    if [ "$INCLUDE_Passwall" == "true" ]; then
         cd $GITHUB_WORKSPACE/lede/package/CodeTiger
         git clone https://github.com/xiaorouji/openwrt-passwall.git -b main
     fi
-    if (( $INCLUDE_VSSR == 'true' )); then
+    if [ "$INCLUDE_VSSR" == "true" ]; then
         cd $GITHUB_WORKSPACE/lede/package/CodeTiger
         git clone https://github.com/jerrykuku/lua-maxminddb.git
         git clone https://github.com/jerrykuku/luci-app-vssr.git 
     fi
-    if (( $INCLUDE_mt7621_OC1000MHz == 'true' )); then
+    if [ "$INCLUDE_OpenClash" == "true" ]; then
+        cd $GITHUB_WORKSPACE/lede/package/CodeTiger
+        git clone https://github.com/vernesong/OpenClash.git
+    fi
+    if [ "$INCLUDE_mt7621_OC1000MHz" == "true" ]; then
         cd $GITHUB_WORKSPACE
         mv -f Customize/102-mt7621-fix-cpu-clk-add-clkdev.patch $GITHUB_WORKSPACE/lede/target/linux/ramips/patches-5.4
     fi
-    if (( $INCLUDE_Enable_FirewallPort_53 == 'true' )); then
+    if [ "$INCLUDE_Enable_FirewallPort_53" == 'true' ]; then
         sed -i "s?iptables?#iptables?g"  $GITHUB_WORKSPACE/lede/package/lean/default-settings/files/zzz-default-settings> /dev/null 2>&1
     fi
-    if [ $Change_Wifi = 'true' ]; then
+    if [ "$Change_Wifi" == 'true' ]; then
         cd $GITHUB_WORKSPACE
         mv -f Customize/wireless $GITHUB_WORKSPACE/lede/package/base-files/files/etc/config
     fi
-    if [ $INCLUDE_Enable_Ipv6 = 'true' ]; then
+    if [ "$INCLUDE_Enable_Ipv6" == 'true' ]; then
         cd $GITHUB_WORKSPACE
         mkdir -p $GITHUB_WORKSPACE/lede/package/base-files/files/etc/hotplug.d/iface
         mv -f Customize/90-ipv6 $GITHUB_WORKSPACE/lede/package/base-files/files/etc/hotplug.d/iface
         sed -i '41a\echo "'"ip6tables -t nat -A POSTROUTING -o eth0.2 -j MASQUERADE"'" >> \/etc\/firewall.user' $GITHUB_WORKSPACE/lede/package/lean/default-settings/files/zzz-default-settings 
     fi
-    cd $GITHUB_WORKSPACE
-    mv -f Customize/mwan3 $GITHUB_WORKSPACE/lede/package/feeds/packages/mwan3/files/etc/config
+    if [ "$INCLUDE_Enable_MWan3" == 'true' ]; then
+        cd $GITHUB_WORKSPACE
+        mv -f Customize/mwan3 $GITHUB_WORKSPACE/lede/package/feeds/packages/mwan3/files/etc/config
+    fi
     sed -i "s?Openwrt?Openwrt Compiled By $Author?g" $GITHUB_WORKSPACE/lede/package/base-files/files/etc/banner
     sed -i "s?${Lede_Version}?${Lede_Version} Compiled by ${Author} [$Date]?g" $Default_File
-    mv -f Customize/dhcp $GITHUB_WORKSPACE/lede/package/base-files/files/etc/config
+    if [ "$Change_Dhcp" == 'true' ];then
+        mv -f Customize/dhcp $GITHUB_WORKSPACE/lede/package/base-files/files/etc/config
+    fi
 }
 
 Diy-Part2() {

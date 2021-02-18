@@ -20,7 +20,8 @@ on:
 
 env:
   env:
-  CONFIG_FILE: newifi_D2.config
+  CONFIG_FILE: newifi_D2.conf
+  DRIVE_LABLE: newifi_D2
   UPLOAD_RELEASE: true
   UPLOAD_FIRMWARE: true
   UPLOAD_BIN_DIR: false
@@ -47,6 +48,9 @@ jobs:
           sudo -E apt-get -qq update
           sudo -E apt-get -qq install $(curl -fsSL git.io/depends-ubuntu-1804)
           sudo -E apt-get clean
+          cd
+          echo "export DRIVE_LABLE=$DRIVE_LABLE" >> .profile
+          source .profile
 
       - name: Clone Openwrt source code
         run: |
@@ -120,16 +124,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
-          tag_name: AutoUpdate
+          tag_name: newifi_D2
           files: lede/bin/Firmware/*
 
-      - name: SSH connection to Actions1
-        uses: P3TERX/ssh2actions@v1.0.0
-        if: failure()
-        env:
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          
+
       - name: Remove old Releases
         uses: dev-drprasad/delete-older-releases@v0.1.0
         if: env.REMOVE_OLD_RELEASE == 'true' && !cancelled()
@@ -146,7 +144,7 @@ jobs:
           retain_days: 1
           keep_minimum_runs: 3
 
-      - name: SSH connection to Actions2
+      - name: SSH connection to Actions1
         uses: P3TERX/ssh2actions@v1.0.0
         if: failure()
         env:
