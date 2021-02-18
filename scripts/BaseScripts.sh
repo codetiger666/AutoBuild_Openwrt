@@ -68,7 +68,7 @@ Diy-Part1() {
     mv -f Customize/dhcp $GITHUB_WORKSPACE/lede/package/base-files/files/etc/config
 }
 
-Diy-Part1() {
+Diy-Part2() {
     Date=`date "+%Y/%m/%d"`
     Default_Firmware="openwrt-${TARGET_BOARD}-${TARGET_SUBTARGET}-${TARGET_PROFILE}-squashfs-sysupgrade.bin"
 	AutoBuild_Firmware="AutoBuild-${TARGET_PROFILE}-${Date}.bin"

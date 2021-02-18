@@ -111,7 +111,7 @@ jobs:
       - name: copy file to Releases
         working-directory: ./lede
         run: |
-          source scripts/BaseScripts.sh
+          source ../scripts/BaseScripts.sh
           Diy-Part2
 
       - name: Upload Firmware to Releases
