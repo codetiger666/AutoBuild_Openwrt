@@ -121,8 +121,14 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         with:
           tag_name: AutoUpdate
-          body_path: update_log.txt
           files: lede/bin/Firmware/*
+
+      - name: SSH connection to Actions1
+        uses: P3TERX/ssh2actions@v1.0.0
+        if: failure()
+        env:
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           
       - name: Remove old Releases
         uses: dev-drprasad/delete-older-releases@v0.1.0
@@ -139,3 +145,10 @@ jobs:
         with:
           retain_days: 1
           keep_minimum_runs: 3
+
+      - name: SSH connection to Actions2
+        uses: P3TERX/ssh2actions@v1.0.0
+        if: failure()
+        env:
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
