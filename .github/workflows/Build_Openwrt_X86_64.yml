@@ -20,8 +20,8 @@ on:
 
 env:
   env:
-  CONFIG_FILE: newifi_D2.conf
-  DRIVE_LABLE: newifi_D2
+  CONFIG_FILE: x86_64.conf
+  DRIVE_LABLE: x86_64
   UPLOAD_RELEASE: true
   UPLOAD_FIRMWARE: true
   UPLOAD_BIN_DIR: false
