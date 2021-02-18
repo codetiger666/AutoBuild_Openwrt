@@ -70,6 +70,10 @@ Diy-Part1() {
 
 Diy-Part2() {
     Date=`date "+%Y/%m/%d"`
+    ARGET_PROFILE="$(egrep -o "CONFIG_TARGET.*DEVICE.*=y" .config | sed -r 's/.*DEVICE_(.*)=y/\1/')"
+    TARGET_BOARD="$(awk -F '[="]+' '/TARGET_BOARD/{print $2}' .config)"
+	TARGET_SUBTARGET="$(awk -F '[="]+' '/TARGET_SUBTARGET/{print $2}' .config)"
+    TARGET_PROFILE="$(egrep -o "CONFIG_TARGET.*DEVICE.*=y" .config | sed -r 's/.*DEVICE_(.*)=y/\1/')"
     Default_Firmware="openwrt-${TARGET_BOARD}-${TARGET_SUBTARGET}-${TARGET_PROFILE}-squashfs-sysupgrade.bin"
 	AutoBuild_Firmware="AutoBuild-${TARGET_PROFILE}-${Date}.bin"
 	AutoBuild_Detail="AutoBuild-${TARGET_PROFILE}-${Date}.detail"
