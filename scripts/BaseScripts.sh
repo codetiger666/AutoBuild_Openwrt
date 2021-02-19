@@ -12,6 +12,7 @@ Core_Newifi_D2(){
     Change_Wifi=true
     INCLUDE_Enable_MWan3=true
     Change_Dhcp=true
+    INCLUDE_OpenClash=true
 }
 
 Core_x86_64(){
@@ -19,6 +20,7 @@ Core_x86_64(){
     INCLUDE_SSR_Plus=true
     INCLUDE_Passwall=true
     INCLUDE_VSSR=true
+    INCLUDE_OpenClash=true
 }
 
 Diy-Part1() {
@@ -42,7 +44,9 @@ Diy-Part1() {
     mkdir -p $GITHUB_WORKSPACE/lede/package/base-files/files/etc/config > /dev/null 2>1
     mkdir -p  $GITHUB_WORKSPACE/lede/package/CodeTiger > /dev/null 2>1
     cd $GITHUB_WORKSPACE/lede/package/CodeTiger
+
     # svn checkout https://github.com/openwrt/openwrt/trunk/package/kernel/mt76
+    rm -rf $GITHUB_WORKSPACE/lede/package/lean/luci-theme-argon
     git clone https://github.com/jerrykuku/luci-theme-argon.git -b 18.06
     git clone https://github.com/jerrykuku/luci-app-argon-config.git
     if [ "$INCLUDE_SSR_Plus" == "true" ]; then
