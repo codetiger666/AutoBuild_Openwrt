@@ -13,6 +13,8 @@ on:
         required: true
         default: 'false'
 
+  schedule:
+    - cron: 0 10 * * *
   #push:
   #  branches: [ main ]
   # pull_request:
