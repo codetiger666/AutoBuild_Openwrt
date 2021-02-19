@@ -105,3 +105,16 @@ Diy-Part2() {
 	_SHA256=$(sha256sum bin/Firmware/${AutoBuild_Firmware} | cut -d ' ' -f1)
     echo -e "\nMD5:${_MD5}\nSHA256:${_SHA256}" > bin/Firmware/"${AutoBuild_Detail}"
 }
+
+Diy-Part2_x86_64() {
+    Date=`date "+%Y%m%d"`
+	mkdir bin/Firmware
+	mv -f bin/targets/x86/64/openwrt-x86-64-*-combined-efi.img.gz bin/Firmware/"openwrt-x86-64-efi-$Date.img.gz"
+    mv -f bin/targets/x86/64/openwrt-x86-64-*-combined.img.gz bin/Firmware/"openwrt-x86-64-$Date.img.gz"
+	_MD5_efi=$(md5sum bin/Firmware/"openwrt-x86-64-efi-$Date.img.gz" | cut -d ' ' -f1)
+    _MD5=$(md5sum bin/Firmware/"openwrt-x86-64-$Date.img.gz" | cut -d ' ' -f1)
+	_SHA256_efi=$(sha256sum bin/Firmware/"openwrt-x86-64-efi-$Date.img.gz" | cut -d ' ' -f1)
+    _SHA256=$(sha256sum bin/Firmware/"openwrt-x86-64-$Date.img.gz" | cut -d ' ' -f1)
+    echo -e "\nMD5:${_MD5}\nSHA256:${_SHA256}" > bin/Firmware/"openwrt-x86-64-$Date.detail"
+    echo -e "\nMD5:${_MD5_efi}\nSHA256:${_SHA256_efi}" > bin/Firmware/"openwrt-x86-64-efi-$Date.detail"
+}
