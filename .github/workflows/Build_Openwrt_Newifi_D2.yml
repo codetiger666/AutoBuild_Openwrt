@@ -20,7 +20,7 @@ on:
 
 env:
   env:
-  CONFIG_FILE: newifi_D2.conf
+  CONFIG_FILE: newifi_D2.config
   DRIVE_LABLE: newifi_D2
   UPLOAD_RELEASE: true
   UPLOAD_FIRMWARE: true
