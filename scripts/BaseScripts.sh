@@ -12,7 +12,7 @@ Core_Newifi_D2(){
     Change_Wifi=true
     INCLUDE_Enable_MWan3=true
     Change_Dhcp=true
-    INCLUDE_OpenClash=true
+    # INCLUDE_OpenClash=true
 }
 
 Core_x86_64(){
@@ -20,7 +20,7 @@ Core_x86_64(){
     INCLUDE_SSR_Plus=true
     INCLUDE_Passwall=true
     INCLUDE_VSSR=true
-    INCLUDE_OpenClash=true
+    # INCLUDE_OpenClash=true
 }
 
 Diy-Part1() {
