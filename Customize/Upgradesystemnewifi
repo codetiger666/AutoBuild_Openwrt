@@ -13,11 +13,11 @@ if [[ `curl $imgfile` == 'Not Found' || `curl $md5file` == 'Not Found' ]]; then
     exit 2
 fi
 cd /tmp
-rm -rf openwrt-x86-64-efi-*.img.gz openwrt-x86-64-efi-*.detail
+rm -rf AutoBuild-d-team_newifi*.bin AutoBuild-d-team_newifi*.detail
 wget $imgfile
 wget $md5file
-md5file_md5=`cat openwrt-x86-64-efi-$day.detail | grep MD5 | awk -F ':' '{print $2}'`
-md5=`md5sum openwrt-x86-64-efi-$day.img.gz | awk 'NF=1'`
+md5file_md5=`cat AutoBuild-d-team_newifi-d2-$day.detail | grep MD5 | awk -F ':' '{print $2}'`
+md5=`md5sum AutoBuild-d-team_newifi-d2-$day.bin | awk 'NF=1'`
 file=AutoBuild-d-team_newifi-d2-$day.bin
 if [[ "$md5file_md5" == "$md5" ]];then
     echo '下载成功'
