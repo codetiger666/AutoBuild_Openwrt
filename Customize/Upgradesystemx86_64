@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+day=`date '+%Y%m%d'`
+imgfile=https://github.com/nieningproj/AutoBuild_Openwrt/releases/download/x86_64/openwrt-x86-64-efi-$day.img.gz
+md5file=https://github.com/nieningproj/AutoBuild_Openwrt/releases/download/x86_64/openwrt-x86-64-efi-$day.detail
+if [[ `curl $imgfile` == 'Not Found' ]]; then
+    day=$(($day-1))
+fi
+imgfile=https://github.com/nieningproj/AutoBuild_Openwrt/releases/download/x86_64/openwrt-x86-64-efi-$day.img.gz
+md5file=https://github.com/nieningproj/AutoBuild_Openwrt/releases/download/x86_64/openwrt-x86-64-efi-$day.detail
+if [[ `curl $imgfile` == 'Not Found' || `curl $md5file` == 'Not Found' ]]; then
+    echo '文件验证错误！！！'
+    exit 2
+fi
+cd /tmp
+rm -rf openwrt-x86-64-efi-*.img.gz openwrt-x86-64-efi-*.detail
+wget $imgfile
+wget $md5file
+md5file_md5=`cat openwrt-x86-64-efi-$day.detail | grep MD5 | awk -F ':' '{print $2}'`
+md5=`md5sum openwrt-x86-64-efi-$day.img.gz | awk 'NF=1'`
+file=openwrt-x86-64-efi-$day.img.gz
+if [[ "$md5file_md5" == "$md5" ]];then
+    echo '下载成功'
+else
+    echo '文件下载错误！！！'
+    exit 2
+fi
+if [[ "$1" == '-n' ]];then
+    echo -n "是否确认不保留配置升级(Y/N)?"
+    read key
+    if [[ "$key" == "Y" || "$key" == "y" ]]; then
+        sysupgrade -n $file
+    fi
+    exit
+else
+    echo -n "是否确认升级(Y/N)?"
+    read key
+    if [[ "$key" == "Y" || "$key" == "y" ]]; then
+        sysupgrade $file
+    fi
+    exit
+fi
