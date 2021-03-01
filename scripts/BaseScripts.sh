@@ -27,11 +27,11 @@ Diy-Part1() {
     if [ "$DRIVE_LABLE" == "newifi_D2" ];then
         Core_Newifi_D2
         cd $GITHUB_WORKSPACE
-        mv -f  Customize/Upgradesystemx86_64 $GITHUB_WORKSPACE/lede/package/base-files/files/bin/Upgradesystem
+        mv -f  Customize/Upgradesystemnewifi $GITHUB_WORKSPACE/lede/package/base-files/files/bin/Upgradesystem
         chmod +x $GITHUB_WORKSPACE/lede/package/base-files/files/bin/Upgradesystem
     fi
     if [ "$DRIVE_LABLE" == "x86_64" ];then
-        mv -f  Customize/Upgradesystemnewifi $GITHUB_WORKSPACE/lede/package/base-files/files/bin/Upgradesystem
+        mv -f  Customize/Upgradesystemx86_64 $GITHUB_WORKSPACE/lede/package/base-files/files/bin/Upgradesystem
         chmod +x $GITHUB_WORKSPACE/lede/package/base-files/files/bin/Upgradesystem
         Core_x86_64
     fi
