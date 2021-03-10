@@ -67,11 +67,11 @@ config nodes '696cd32c1d5149ee95fd1b3accbad6df'
 	option youtube '_default'
 	option netflix '_default'
 	option TVB '_default'
-	option default_node '6674808814fe43b9b78ebbf902f50f50'
 	option DIRECT '_direct'
 	option PROXY 'nil'
 	option GFW '_default'
 	option NOTCN '_direct'
+	option default_node '_direct'
 
 config global
 	option socks_enabled '0'
@@ -85,10 +85,10 @@ config global
 	option trojan_loglevel '2'
 	option udp_proxy_mode 'disable'
 	option localhost_udp_proxy_mode 'disable'
-	option enabled '1'
 	option tcp_node '696cd32c1d5149ee95fd1b3accbad6df'
 	option tcp_proxy_mode 'chnroute'
 	option localhost_tcp_proxy_mode 'chnroute'
+	option enabled '0'
 
 config global_haproxy
 	option balancing_enable '0'
@@ -166,7 +166,6 @@ config auto_switch
 	option restore_switch '1'
 	option testing_time '10'
 	option enable '0'
-
 
 config shunt_rules 'GFW'
 	option remarks 'GFW'
