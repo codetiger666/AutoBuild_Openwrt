@@ -1,0 +1,15 @@
+#!/bin/sh /etc/rc.common
+
+START=99
+
+start(){
+    wget -P /tmp https://cdn.jsdelivr.net/gh/Loyalsoldier/v2ray-rules-dat@release/geoip.dat
+    if [ "$?" == "0" ]; then
+        /bin/cp /tmp/geoip.dat /usr/share/xray
+    fi
+    wget -P /tmp https://cdn.jsdelivr.net/gh/Loyalsoldier/v2ray-rules-dat@release/geosite.dat
+    if [ "$?" == "0" ]; then
+        /bin/cp /tmp/geosite.dat /usr/share/xray
+    fi
+    rm -rf /etc/rc.d/S99config_passwall
+}

@@ -80,10 +80,10 @@ Diy-Part1() {
         git clone https://github.com/vernesong/OpenClash.git
     fi
     if [[ "$Update_Geo" = "true" ]]; then
-        mkdir -p $GITHUB_WORKSPACE/lede/package/base-files/files/usr/share/xray
-        cd $GITHUB_WORKSPACE/lede/package/base-files/files/usr/share/xray
-        wget https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat
-        wget https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat
+        mkdir -p $GITHUB_WORKSPACE/lede/package/base-files/files/etc/rc.d
+        cd $GITHUB_WORKSPACE/lede/package/base-files/files/etc/rc.d
+        /bin/cp $GITHUB_WORKSPACE/Customize/S99config_passwall ./
+        chmod +x ./S99config_passwall
         cd $GITHUB_WORKSPACE/lede/package/base-files/files/etc/config
         /usr/bin/cp $GITHUB_WORKSPACE/Customize/passwall ./
     fi
