@@ -13,6 +13,7 @@ Core_Newifi_D2(){
     INCLUDE_Enable_MWan3=true
     Change_Dhcp=true
     INCLUDE_SmartDNS=true
+    Update_Geo=true
     # INCLUDE_OpenClash=true
 }
 
@@ -22,6 +23,7 @@ Core_x86_64(){
     INCLUDE_Passwall=true
     INCLUDE_VSSR=true
     INCLUDE_SmartDNS=true
+    Update_Geo=true
     # INCLUDE_OpenClash=true
 }
 
@@ -77,6 +79,15 @@ Diy-Part1() {
         cd $GITHUB_WORKSPACE/lede/package/CodeTiger
         git clone https://github.com/vernesong/OpenClash.git
     fi
+    if [[ "$Update_Geo" = "true" ]]; then
+        mkdir -p $GITHUB_WORKSPACE/lede/package/base-files/files/usr/share/xray
+        cd $GITHUB_WORKSPACE/lede/package/base-files/files/usr/share/xray
+        wget https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat
+        wget https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat
+        cd $GITHUB_WORKSPACE/lede/package/base-files/files/etc/config
+        /usr/bin/cp $GITHUB_WORKSPACE/Customize/passwall ./
+    fi
+    
     if [ "$INCLUDE_mt7621_OC1000MHz" == "true" ]; then
         cd $GITHUB_WORKSPACE
         mv -f Customize/102-mt7621-fix-cpu-clk-add-clkdev.patch $GITHUB_WORKSPACE/lede/target/linux/ramips/patches-5.4
