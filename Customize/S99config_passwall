@@ -11,5 +11,4 @@ start(){
     if [ "$?" == "0" ]; then
         /bin/cp /tmp/geosite.dat /usr/share/xray
     fi
-    rm -rf /etc/rc.d/S99config_passwall
 }
