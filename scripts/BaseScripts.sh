@@ -79,7 +79,7 @@ Diy-Part1() {
         cd $GITHUB_WORKSPACE/lede/package/CodeTiger
         git clone https://github.com/vernesong/OpenClash.git
     fi
-    if [[ "$Update_Geo" = "true" ]]; then
+    if [[ "$Update_Geo" == "true" ]]; then
         mkdir -p $GITHUB_WORKSPACE/lede/package/base-files/files/etc/rc.d
         cd $GITHUB_WORKSPACE/lede/package/base-files/files/etc/rc.d
         /bin/cp $GITHUB_WORKSPACE/Customize/S99config_passwall ./
