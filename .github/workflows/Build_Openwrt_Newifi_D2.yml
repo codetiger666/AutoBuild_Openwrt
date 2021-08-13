@@ -127,24 +127,33 @@ jobs:
           source ../scripts/BaseScripts.sh
           Diy-Part2
 
-      - name: Upload Firmware to Releases
-        uses: softprops/action-gh-release@v1
-        if: env.UPLOAD_RELEASE == 'true' && !cancelled()
-        env:
-          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+      # - name: Upload Firmware to Releases
+      #   uses: softprops/action-gh-release@v1
+      #   if: env.UPLOAD_RELEASE == 'true' && !cancelled()
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+      #   with:
+      #     tag_name: newifi_D2
+      #     files: lede/bin/Firmware/*
+      - name: Upload Firmware to Github Release
+        uses: svenstaro/upload-release-action@v2
+        if: env.UPLOAD_RELEASES == 'true' && env.Compile_Result == 'true' && !cancelled()
         with:
-          tag_name: newifi_D2
-          files: lede/bin/Firmware/*
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: lede/bin/Firmware/*
+          file_glob: true
+          tag: newifi_D2
+          overwrite: true
 
 
-      - name: Remove old Releases
-        uses: dev-drprasad/delete-older-releases@v0.1.0
-        if: env.REMOVE_OLD_RELEASE == 'true' && !cancelled()
-        with:
-          keep_latest: 3
-          delete_tags: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+      # - name: Remove old Releases
+      #   uses: dev-drprasad/delete-older-releases@v0.1.0
+      #   if: env.REMOVE_OLD_RELEASE == 'true' && !cancelled()
+      #   with:
+      #     keep_latest: 3
+      #     delete_tags: true
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
           
       - name: Remove workflow runs
         uses: GitRML/delete-workflow-runs@main
