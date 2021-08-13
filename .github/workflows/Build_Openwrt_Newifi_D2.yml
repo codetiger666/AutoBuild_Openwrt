@@ -139,7 +139,7 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         if: env.UPLOAD_RELEASES == 'true' && env.Compile_Result == 'true' && !cancelled()
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          repo_token: ${{ secrets.RELEASE_TOKEN }}
           file: lede/bin/Firmware/*
           file_glob: true
           tag: newifi_D2
