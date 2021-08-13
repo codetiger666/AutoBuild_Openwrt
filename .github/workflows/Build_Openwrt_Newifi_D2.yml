@@ -137,7 +137,7 @@ jobs:
       #     files: lede/bin/Firmware/*
       - name: Upload Firmware to Github Release
         uses: svenstaro/upload-release-action@v2
-        if: env.UPLOAD_RELEASES == 'true' && env.Compile_Result == 'true' && !cancelled()
+        if: env.UPLOAD_RELEASE == 'true' && !cancelled()
         with:
           repo_token: ${{ secrets.RELEASE_TOKEN }}
           file: lede/bin/Firmware/*
