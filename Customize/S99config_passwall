@@ -3,6 +3,7 @@
 START=99
 
 start(){
+    mkdir -p /usr/share/xray
     wget -P /tmp https://cdn.jsdelivr.net/gh/Loyalsoldier/v2ray-rules-dat@release/geoip.dat
     if [ "$?" == "0" ]; then
         /bin/cp /tmp/geoip.dat /usr/share/xray

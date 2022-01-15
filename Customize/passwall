@@ -3,31 +3,6 @@ config shunt_rules 'ads'
 	option remarks '广告'
 	option domain_list 'geosite:category-ads-all'
 
-config shunt_rules 'DIRECT'
-	option remarks 'DIRECT'
-	option domain_list 'geosite:cn
-geosite:apple-cn
-geosite:win-update
-geosite:google-cn'
-
-config shunt_rules 'Telegram'
-	option remarks 'Telegram'
-	option ip_list '149.154.160.0/20
-91.108.4.0/22
-91.108.56.0/24
-109.239.140.0/24
-67.198.55.0/24
-geoip:telegram'
-
-config shunt_rules 'youtube'
-	option remarks 'youtube'
-	option domain_list 'youtube
-youtube.com
-youtu.be
-googlevideo.com
-ytimg.com
-gvt2.com'
-
 config shunt_rules 'netflix'
 	option remarks '奈飞'
 	option domain_list 'fast.com
@@ -50,10 +25,32 @@ netflixdnstest7.com
 netflixdnstest8.com
 netflixdnstest9.com'
 
-config shunt_rules 'TVB'
-	option remarks 'TVB'
-	option domain_list 'tvb.com
-mytvsuper.com'
+config shunt_rules 'Telegram'
+	option remarks 'Telegram'
+	option ip_list 'geoip:telegram'
+
+config shunt_rules 'CN'
+	option remarks 'CN'
+	option domain_list 'geosite:cn
+geosite:apple-cn
+geosite:google-cn
+geosite:tld-cn
+geosite:category-games@cn
+yrjw.tk
+gybyt.cn'
+
+config shunt_rules 'CNIP'
+	option remarks 'CNIP'
+	option ip_list 'geoip:cn'
+
+config shunt_rules 'GFW'
+	option remarks 'GFW'
+	option domain_list 'geosite:gfw
+geosite:greatfire
+raw.githubusercontent.com
+typora.io
+ip111.cn
+ypyun.me'
 
 config nodes '696cd32c1d5149ee95fd1b3accbad6df'
 	option remarks '分流总节点'
@@ -63,32 +60,36 @@ config nodes '696cd32c1d5149ee95fd1b3accbad6df'
 	option domainStrategy 'IPIfNonMatch'
 	option ads '_blackhole'
 	option China '_direct'
-	option Telegram '_default'
 	option youtube '_default'
-	option netflix '_default'
 	option TVB '_default'
 	option DIRECT '_direct'
 	option PROXY 'nil'
-	option GFW '_default'
 	option NOTCN '_direct'
+	option main_node 'nil'
+	option CN 'nil'
+	option CNIP 'nil'
 	option default_node '_direct'
+	option netflix '_direct'
+	option Telegram '_direct'
+	option GFW '_direct'
 
 config global
-	option socks_enabled '0'
 	option udp_node 'nil'
-	option dns_mode 'pdnsd'
 	option up_china_dns 'default'
-	option dns_forward '8.8.8.8'
-	option close_log_tcp '0'
 	option close_log_udp '0'
 	option loglevel 'warning'
 	option trojan_loglevel '2'
 	option udp_proxy_mode 'disable'
 	option localhost_udp_proxy_mode 'disable'
-	option tcp_node '696cd32c1d5149ee95fd1b3accbad6df'
 	option tcp_proxy_mode 'chnroute'
 	option localhost_tcp_proxy_mode 'chnroute'
-	option enabled '0'
+	option enabled '1'
+	option dns_mode 'udp'
+	option dns_forward '8.8.8.8'
+	option tcp_node '696cd32c1d5149ee95fd1b3accbad6df'
+	option socks_enabled '0'
+	option chinadns_ng '0'
+	option close_log_tcp '1'
 
 config global_haproxy
 	option balancing_enable '0'
@@ -108,24 +109,25 @@ config global_forwarding
 
 config global_other
 	option status 'big_icon show_check_port show_ip111'
-	option nodes_ping 'auto_ping tcping'
 	option ipv6_tproxy '0'
+	option nodes_ping 'auto_ping tcping info'
 
 config global_rules
 	option auto_update '0'
-	option chnlist_update '1'
-	option chnroute_update '1'
-	option chnroute6_update '1'
-	option gfwlist_update '1'
 	option gfwlist_url 'https://cdn.jsdelivr.net/gh/Loukky/gfwlist-by-loukky/gfwlist.txt'
 	option chnroute_url 'https://ispip.clang.cn/all_cn.txt'
 	option chnroute6_url 'https://ispip.clang.cn/all_cn_ipv6.txt'
 	list chnlist_url 'https://cdn.jsdelivr.net/gh/felixonmars/dnsmasq-china-list/accelerated-domains.china.conf'
 	list chnlist_url 'https://cdn.jsdelivr.net/gh/felixonmars/dnsmasq-china-list/apple.china.conf'
 	list chnlist_url 'https://cdn.jsdelivr.net/gh/felixonmars/dnsmasq-china-list/google.china.conf'
-	option xray_location_asset '/usr/share/xray/'
-	option geoip_update '0'
 	option geosite_update '0'
+	option xray_location_asset '/usr/share/xray/'
+	option gfwlist_update '1'
+	option chnroute_update '1'
+	option chnroute6_update '1'
+	option chnlist_update '1'
+	option geoip_update '0'
+	option v2ray_location_asset '/usr/share/xray/'
 
 config global_app
 	option xray_file '/usr/bin/xray'
@@ -135,44 +137,21 @@ config global_app
 
 config global_subscribe
 	option subscribe_proxy '0'
-	option auto_update_subscribe '0'
 	option allowInsecure '1'
 	option filter_keyword_mode '1'
+	option auto_update_subscribe '1'
+	option week_update_subscribe '7'
+	option time_update_subscribe '2'
 	list filter_discard_list '过期时间'
 	list filter_discard_list '剩余流量'
 	list filter_discard_list 'QQ群'
 	list filter_discard_list '官网'
 	list filter_discard_list 'q群'
 	list filter_discard_list '防失联地址'
-	list filter_discard_list '回国'
-	list filter_discard_list '新加坡'
-	list filter_discard_list '俄罗斯'
-	list filter_discard_list '美国'
-	list filter_discard_list '韩国'
-	list filter_discard_list '巴西'
-	list filter_discard_list '印度'
-	list filter_discard_list '土耳其'
-	list filter_discard_list '英国'
-	list filter_discard_list '荷兰'
-	list filter_discard_list '马来西亚'
-	list filter_discard_list '德国'
-	list filter_discard_list '实验性'
-	list filter_discard_list '免流'
-	list filter_discard_list '0.5'
-	list filter_discard_list '福利'
-	list filter_discard_list '加拿大'
+	option ss_aead_type 'xray'
+	option trojan_type 'trojan-plus'
 
 config auto_switch
-	option restore_switch '1'
 	option testing_time '10'
 	option enable '0'
-
-config shunt_rules 'GFW'
-	option remarks 'GFW'
-	option domain_list 'geosite:gfw
-geosite:greatfire'
-
-config shunt_rules 'NOTCN'
-	option remarks 'NOTCN'
-	option domain_list 'geosite:geolocation-!cn'
 
