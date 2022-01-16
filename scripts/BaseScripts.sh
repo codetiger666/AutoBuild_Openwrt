@@ -14,7 +14,7 @@ Core_Newifi_D2(){
     Change_Dhcp=true
     INCLUDE_SmartDNS=true
     Update_Geo=true
-    # INCLUDE_OpenClash=true
+    INCLUDE_OpenClash=true
 }
 
 Core_x86_64(){
@@ -24,7 +24,7 @@ Core_x86_64(){
     INCLUDE_VSSR=true
     INCLUDE_SmartDNS=true
     Update_Geo=true
-    # INCLUDE_OpenClash=true
+    INCLUDE_OpenClash=true
 }
 
 Diy-Part1() {
