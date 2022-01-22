@@ -138,11 +138,10 @@ jobs:
 
           
       - name: Remove old Releases
-        uses: dev-drprasad/delete-older-releases@v0.1.0
+        uses: dev-drprasad/delete-older-releases@v0.2.0
         if: env.REMOVE_OLD_RELEASE == 'true' && !cancelled()
         with:
           keep_latest: 3
-          delete_tags: true
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
           
